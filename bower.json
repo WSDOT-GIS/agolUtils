@@ -1,0 +1,28 @@
+{
+  "name": "GalleryInfoTemplate",
+  "authors": [
+    "WSDOT"
+  ],
+  "description": "Supplements the ArcGIS API for JavaScript with additional utilities for working with ArcGIS Online.",
+  "main": "agolUtils.js",
+  "moduleType": [
+    "amd"
+  ],
+  "keywords": [
+    "ArcGIS",
+    "attachment",
+    "InfoWindow"
+  ],
+  "license": "Unlicense",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "demo",
+    "Web.config",
+    "Web.*.config"
+  ],
+  "dependencies": {}
+}

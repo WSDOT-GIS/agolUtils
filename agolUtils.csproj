@@ -42,6 +42,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="agolUtils.js" />
+    <Content Include="AttachmentInfoCollection.js" />
+    <Content Include="bower_components\blueimp-gallery\css\blueimp-gallery.min.css" />
+    <Content Include="bower_components\blueimp-gallery\img\error.png" />
+    <Content Include="bower_components\blueimp-gallery\img\error.svg" />
+    <Content Include="bower_components\blueimp-gallery\img\loading.gif" />
+    <Content Include="bower_components\blueimp-gallery\img\play-pause.png" />
+    <Content Include="bower_components\blueimp-gallery\img\play-pause.svg" />
+    <Content Include="bower_components\blueimp-gallery\img\video-play.png" />
+    <Content Include="bower_components\blueimp-gallery\img\video-play.svg" />
     <Content Include="bower_components\blueimp-gallery\js\blueimp-gallery.js" />
     <Content Include="bower_components\blueimp-gallery\js\blueimp-gallery.min.js" />
     <Content Include="demo\index.html" />
@@ -55,12 +64,18 @@
     <Content Include="demo\layerinfo.json" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="gallery.html" />
+    <Content Include="gallery.js" />
     <Content Include="UNLICENSE" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="demo\webmap.json" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />

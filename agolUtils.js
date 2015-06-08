@@ -21,6 +21,11 @@
  */
 
 /**
+ * @external esri/layers/Field
+ * @link {@see https://developers.arcgis.com/javascript/jsapi/field-amd.html|esri/layers/Field}
+ */
+
+/**
  * @external {Object} layerInfoTemplateOptions
  * @link {@see https://developers.arcgis.com/javascript/jsapi/arcgisdynamicmapservicelayer-amd.html#infotemplates|esri/layers/ArcGISDynamicMapServiceLayer.infoTemplates}
  * @property {external:esri/InfoTemplate} infoTemplate
@@ -33,6 +38,15 @@
  * @typedef {Object.<number, external:layerInfoTemplateOptions>} layerInfoTemplateOptionsDictionary
  */
 
+/**
+ * Information returned from the {@link http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Attachment_Infos_Map_Service_Layer/02r3000000r0000000/|Attachment Infos REST Endpoint}
+ * @typedef {Object} AttachmentInfo
+ * @property {number} id - Unique identifier for attachment in relation to the layer.
+ * @property {string} contentType - MIME type of attachment.
+ * @property {number} size - Size of the attachment.
+ * @property {string} name - Attachment's original file name.
+ */
+
 define([
 	"dojo/Deferred",
 	
@@ -40,7 +54,8 @@ define([
 	"esri/request",
 	"esri/layers/ArcGISDynamicMapServiceLayer",
 	"esri/layers/ArcGISTiledMapServiceLayer",
-	"esri/dijit/PopupTemplate"
+	"esri/dijit/PopupTemplate",
+	"./AttachmentInfoCollection"
 ], function (
 	Deferred,
 
@@ -48,9 +63,12 @@ define([
 	esriRequest,
 	ArcGISDynamicMapServiceLayer,
 	ArcGISTiledMapServiceLayer,
-	PopupTemplate
+	PopupTemplate,
+	AttachmentInfoCollection
 ) {
 	var exports = {};
+
+	exports.galleryUrl = "gallery.html";
 
 	/**
 	 * Reads a JSON file containing an {@link external:operationalLayer|operationalLayer} definition.
@@ -76,6 +94,72 @@ define([
 		return deferred;
 	};
 
+
+
+	/**
+	 * This function calls the default PopupTemplate content function, then modifies the links to point to a gallery page.
+	 * @param {external:esri/Graphic} graphic
+	 * @param {external:esri/layers/layer} graphic._layer
+	 * @param {Object} graphic.attributes
+	 * @returns {HTMLDivElement}
+	 */
+	function createGalleryLinkContent(graphic) {
+		var div;
+
+		function createAttachmentsList() {
+			// get the layer's object ID field.
+			var objectIdField = graphic._layer.objectIdField;
+			// Create the attachments URL
+			var attachmentsUrl = [graphic._layer.url, graphic.attributes[objectIdField], "attachments"].join("/");
+
+			esriRequest({
+				url: attachmentsUrl,
+				content: {
+					f: "json"
+				}
+			}).then(function (response) {
+				var attachmentInfoCollection = new AttachmentInfoCollection(attachmentsUrl, response.attachmentInfos, exports.galleryUrl);
+				var url = attachmentInfoCollection.toGalleryLinkUrl();
+				var a = document.createElement("a");
+				a.href = url;
+				a.target = "gallery";
+				a.textContent = "Gallery";
+
+				var p = document.createElement("p");
+				p.appendChild(a);
+
+				div.insertBefore(p, div.firstChild);
+			}, function (error) {
+				console.error("Error getting attachments", {
+					error: error,
+					url: attachmentsUrl,
+					graphic: graphic
+				});
+			});
+		}
+
+		if (graphic._layer.hasAttachments) {
+			// Create the default content;
+			div = this.defaultContent(graphic);
+			
+			createAttachmentsList();
+		} else {
+			console.warn("Popup info says to show attachments, but layer doesn't have attachments.", {
+				event: graphic,
+				"this": this
+			});
+			this.setContent(this.defaultContent);
+			delete this.defaultContent;
+			return this.content(graphic);
+		}
+
+		
+		
+
+
+		return div;
+	}
+
 	/**
 	 * Converts an {@link external:operationalLayer}'s "layers" property into
 	 * a {@link layerInfoTemplateOptionsDictionary|dictionary of layerInfoTemplateOptions objects}.
@@ -93,6 +177,14 @@ define([
 
 			if (popupInfo) {
 				template = new PopupTemplate(layer.popupInfo);
+				if (popupInfo.showAttachments) {
+					// Sometimes the popup info will say to show attachments, 
+					// but the layer doesn't actually have any.
+					// Store the old content template so we can roll back to it
+					// in case there aren't actually attachments in the layer.
+					template.defaultContent = template.content;
+					template.setContent(createGalleryLinkContent);
+				}
 				if (!dict) {
 					dict = {};
 				}

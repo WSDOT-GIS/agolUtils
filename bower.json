@@ -24,5 +24,7 @@
     "Web.config",
     "Web.*.config"
   ],
-  "dependencies": {}
+  "dependencies": {
+    "blueimp-gallery": "~2.15.2"
+  }
 }

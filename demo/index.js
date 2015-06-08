@@ -27,7 +27,9 @@ require([
 		showAttribution: true
 	});
 
-	agolUtils.getOperationalLayers("webmap.json").then(addLayersToMap, function (error) {
+	agolUtils.galleryUrl = "../gallery.html";
+
+	agolUtils.getOperationalLayers("layerinfo.json", "gallery.html").then(addLayersToMap, function (error) {
 		console.error(error);
 	});
 });

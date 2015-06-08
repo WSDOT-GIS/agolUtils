@@ -105,6 +105,12 @@ define([
 		return dict;
 	};
 
+
+	/**
+	 * Converts an {@link external:operationalLayer|ArcGIS REST API operationalLayer} into an {@link external:esri/layers/layer|ArcGIS API for JavaScript Layer}.
+	 * @param {external:operationalLayer} opLayer
+	 * @returns {external:esri/layers/layer}
+	 */
 	function operationalLayerToLayer(opLayer) {
 		var layer;
 		var layerTypeRe = /ArcGIS(?:Tiled)?MapServiceLayer/;

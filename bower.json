@@ -22,7 +22,9 @@
     "tests",
     "demo",
     "Web.config",
-    "Web.*.config"
+    "Web.*.config",
+	"*.sln",
+	"*.csproj"
   ],
   "dependencies": {
     "blueimp-gallery": "~2.15.2"
